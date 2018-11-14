@@ -6,7 +6,8 @@ import sys
 import auth
 from serversocketdefinition import mysocket
 import time
-#import user
+import user
+#from active_client import active_client_list
 from socket import AF_INET, socket, SOCK_STREAM
 from threading import Thread
 
@@ -17,6 +18,8 @@ from threading import Thread
 		print("%s:%s has connected." %client_address)
 		Thread(target=handle_client, args=(client,)).start()
 '''
+
+#acl = active_client_list()
 
 def get_option(clientsocket):
 	try:
@@ -54,7 +57,7 @@ def sign_up(clientsocket):
 		return False
 
 def sign_in(clientsocket):
-	#curruser = user.user(clientsocket)
+	curruser = user.user(clientsocket)
 	try:
 		clientsocket.mysend('Enter Username:Password\n')
 	except Exception as e:
@@ -70,20 +73,24 @@ def sign_in(clientsocket):
 
 	l = creds.strip('\n').split(':')
 	login_message = auth.login(l[0],l[1])
-	if 'Successful' in login_message:
-		clientsocket.mysend(login_message)
-		return True
-	else:
-		clientsocket.mysend(login_message)
-		return False
-		#return False
-	#curruser.update_cred(l[0],l[1])
-	#login_message = curruser.login()
-	#clientsocket.mysend(login_message)
 	#if 'Successful' in login_message:
-	#	return curruser
+	#	clientsocket.mysend(login_message)
+	#	return True
 	#else:
+	#	clientsocket.mysend(login_message)
 	#	return False
+		#return False
+	curruser.update_cred(l[0],l[1])
+	login_message = curruser.login()
+	clientsocket.mysend(login_message)
+	if 'Successful' in login_message:
+		return curruser
+		#acl.add(l[0])
+		#for i in acl.client_list:
+		#	print(i)
+		#return (curruser, l[0])
+	else:
+		return False
 
 
 def getUsage(clientsocket):
@@ -131,14 +138,17 @@ while True:
 			if option=='1':
 				sign_up(clientsocket)
 			if option=='2':
-				if sign_in(clientsocket):				
-					while True:
-						usage = getUsage(clientsocket)
+				answer = sign_in(clientsocket)
+				if answer:
+					break
+					#curruser = answer[0]
+					#active_client_list.append(answer[1])
+					#print(active_client_list)
+					#if curruser:
+					#	break
+				else:
+					continue
 
-				#if curruser:
-				#	break
-				#else:
-				#	continue
 		#del(curruser)
 
 		clientsocket.close()

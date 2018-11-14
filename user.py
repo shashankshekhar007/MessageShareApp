@@ -9,7 +9,7 @@ class user:
 		self.logged_in = False
 		self.sock = sock
 	
-	def update_credentials(self, name, passwd):
+	def update_cred(self, name, passwd):
 		self.name = name
 		self.pwd = passwd
 
