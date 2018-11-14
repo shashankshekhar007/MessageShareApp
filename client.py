@@ -39,8 +39,8 @@ while True:
 		break
 
 while True:
-	option = 0
-	option_msg = s.myreceive()
+	print("[1]PrivatChat\n[2]FileSharing\n[3]Broadcast\n")
+	option = input("Option:")
 	while option not in ['1','2','3']:
 		option = input(option_msg)
 		if option not in ['1','2','3']:

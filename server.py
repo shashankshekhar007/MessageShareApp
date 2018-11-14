@@ -79,18 +79,18 @@ def sign_in(clientsocket):
 		get_option(clientsocket)
 
 
-def getUsage(clientsocket):
-	print("Entering getUsage")
-	try:
-		clientsocket.mysend('[1]PrivatChat\n[2]FileSharing\n[3]Broadcast\n')
-	except Exception as e:
-		raise e
+def getUsage(clientsocket):	
 	try:
 		choice = clientsocket.myreceive()
 	except Exception as e:
 		raise e
-	print(choice)
-	return 
+	if choice=='1':
+		startChat(clientsocket)
+	if choice=='2':
+		fileShare(clientsocket)
+	if option=='3':
+		broadCast(clientsocket)
+	return
 
 
 
