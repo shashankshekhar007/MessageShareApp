@@ -19,7 +19,7 @@ def accept_incoming_connections():
 		Thread(target=get_option, args=(clientsocket,)).start()
 
 
-#acl = active_client_list()
+active_client_list= []
 
 def get_option(clientsocket):
 	try:
@@ -38,11 +38,7 @@ def get_option(clientsocket):
 		clientsocket.close()
 		return 
 
-def sign_up(clientsocket):
-	try:
-		clientsocket.mysend('Enter Username:Password:Password\n')
-	except Exception as e:
-		raise e
+def sign_up(clientsocket):	
 	try:
 		creds = clientsocket.myreceive()
 	except Exception as e:
@@ -57,17 +53,11 @@ def sign_up(clientsocket):
 		clientsocket.mysend(sign)
 	except Exception as e:
 		raise e
-	if 'Successful' in sign:
-		return True
-	else:
-		return False
+	get_option(clientsocket)
+
 
 def sign_in(clientsocket):
-	curruser = user.user(clientsocket)
-	try:
-		clientsocket.mysend('Enter Username:Password\n')
-	except Exception as e:
-		raise e
+	curruser = user.user(clientsocket)	
 	try:
 		creds = clientsocket.myreceive()
 	except Exception as e:
@@ -79,24 +69,14 @@ def sign_in(clientsocket):
 
 	l = creds.strip('\n').split(':')
 	login_message = auth.login(l[0],l[1])
-	#if 'Successful' in login_message:
-	#	clientsocket.mysend(login_message)
-	#	return True
-	#else:
-	#	clientsocket.mysend(login_message)
-	#	return False
-		#return False
-	curruser.update_cred(l[0],l[1])
-	login_message = curruser.login()
-	clientsocket.mysend(login_message)
 	if 'Successful' in login_message:
-		return curruser
-		#acl.add(l[0])
-		#for i in acl.client_list:
-		#	print(i)
-		#return (curruser, l[0])
+		active_client_list.append(curruser.name)
+		#curruser.login()
+		clientsocket.mysend(login_message)
+		getUsage(clientsocket)	
 	else:
-		return False
+		clientsocket.mysend(login_message)
+		get_option(clientsocket)
 
 
 def getUsage(clientsocket):

@@ -22,13 +22,11 @@ while True:
 			print("Error: Enter 1 or 2 or 3")
 	s.mysend(option)
 	if option=='1':
-		s.myreceive()
 		username = input("Username:")
 		password = getpass.getpass("Password:")
 		password_repeat = getpass.getpass("Re-enter Password:")
 		s.mysend(username+':'+password+':'+password_repeat)
 	if option=='2':
-		s.myreceive()
 		username = input("Username:")
 		password = getpass.getpass("Password:")
 		s.mysend(username+':'+password)

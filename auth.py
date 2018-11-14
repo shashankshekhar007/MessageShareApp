@@ -1,7 +1,6 @@
 import os
 import hashlib
 
-activeusers=[]
 def signup(user, passwd, pass_repeat):
 	if passwd != pass_repeat:
 		return "Passwords do not match\n"
@@ -33,7 +32,6 @@ def login(user, passwd):
 	while entry != "":
 		userpass = entry.split(' ')
 		if userpass[0] == user and userpass[1] == passwd1:
-			activeusers.append(user)
 			return "Login Successful\n"
 		entry = f.readline().strip('\n')
 	
