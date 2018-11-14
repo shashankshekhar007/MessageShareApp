@@ -11,13 +11,13 @@ import user
 from socket import AF_INET, socket, SOCK_STREAM
 from threading import Thread
 
-'''def accept_incoming_connections():
+def accept_incoming_connections():
 	"""Sets up handling for incoming clients."""
 	while True:
-		client, client_address = SERVER.accept()
-		print("%s:%s has connected." %client_address)
-		Thread(target=handle_client, args=(client,)).start()
-'''
+		clientsocket, address = SERVER.accept()
+		print("%s:%s has connected." %address)
+		Thread(target=get_option, args=(clientsocket,)).start()
+
 
 #acl = active_client_list()
 
@@ -30,7 +30,13 @@ def get_option(clientsocket):
 		option = clientsocket.myreceive()
 	except Exception as e:
 		raise e
-	return option
+	if option=='1':
+		sign_up(clientsocket)
+	if option=='2':
+		sign_in(clientsocket)
+	if option=='3':
+		clientsocket.close()
+		return 
 
 def sign_up(clientsocket):
 	try:
@@ -120,40 +126,46 @@ print("Socket successfully created\n")
 SERVER.bind(host, port)
 print("Socket bound to %s" %port)
 
-SERVER.listen(5)
+SERVER.listen(10)
 print("Socket is listening\n")
 
 while True:
-	clientsocket, addr = SERVER.accept()
-	print("Got connection from", addr)
-	newpid = os.fork()
-	if newpid<0:
-		print("Error in forking")
-		sys.exit()
-	elif newpid==0:
-		flag = 1
-		while True:
-			option = get_option(clientsocket)
+	ACCEPT_THREAD = Thread(target = accept_incoming_connections)
+	ACCEPT_THREAD.start()
+	ACCEPT_THREAD.join()
+	# clientsocket, addr = SERVER.accept()
+	# print("Got connection from", addr)
+	# newpid = os.fork()
+	# if newpid<0:
+	# 	print("Error in forking")
+	# 	sys.exit()
+	# elif newpid==0:
+	# 	flag = 1
+	# 	while True:
+	# 		option = get_option(clientsocket)
 
-			if option=='1':
-				sign_up(clientsocket)
-			if option=='2':
-				answer = sign_in(clientsocket)
-				if answer:
-					break
-					#curruser = answer[0]
-					#active_client_list.append(answer[1])
-					#print(active_client_list)
-					#if curruser:
-					#	break
-				else:
-					continue
+	# 		if option=='1':
+	# 			sign_up(clientsocket)
+	# 		if option=='2':
+	# 			answer = sign_in(clientsocket)
+	# 			if answer:
+	# 				print(answer)
+	# 				break
+	# 				#curruser = answer[0]
+	# 				#active_client_list.append(answer[1])
+	# 				#print(active_client_list)
+	# 				#if curruser:
+	# 				#	break
+	# 			else:
+	# 				continue
 
-		#del(curruser)
+	# 	#del(curruser)
 
-		clientsocket.close()
-		break
-	else:
-		clientsocket.close()
+	# 	clientsocket.close()
+	# 	break
+	# else:
+	# 	clientsocket.close()
+SERVER.close()
+
 
 
