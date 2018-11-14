@@ -40,4 +40,18 @@ while True:
 	if 'Successful' in login_msg and option=='2':
 		break
 
+while True:
+	option = 0
+	option_msg = s.myreceive()
+	while option not in ['1','2','3']:
+		option = input(option_msg)
+		if option not in ['1','2','3']:
+			print("Enter either 1 or 2 or 3")
+	s.mysend(option)
+	if option=='1':
+		privateChat()
+	if option=='2':
+		fileTransfer()
+	if option=='3':
+		broadCast()
 s.close()

@@ -72,8 +72,10 @@ def sign_in(clientsocket):
 	login_message = auth.login(l[0],l[1])
 	if 'Successful' in login_message:
 		clientsocket.mysend(login_message)
+		return True
 	else:
 		clientsocket.mysend(login_message)
+		return False
 		#return False
 	#curruser.update_cred(l[0],l[1])
 	#login_message = curruser.login()
@@ -82,6 +84,23 @@ def sign_in(clientsocket):
 	#	return curruser
 	#else:
 	#	return False
+
+
+def getUsage(clientsocket):
+	print("Entering getUsage")
+	try:
+		clientsocket.mysend('[1]PrivatChat\n[2]FileSharing\n[3]Broadcast\n')
+	except Exception as e:
+		raise e
+	try:
+		choice = clientsocket.myreceive()
+	except Exception as e:
+		raise e
+	print(choice)
+	return 
+
+
+
 
 
 port = 12345
@@ -112,7 +131,10 @@ while True:
 			if option=='1':
 				sign_up(clientsocket)
 			if option=='2':
-				sign_in(clientsocket)
+				if sign_in(clientsocket):				
+					while True:
+						usage = getUsage(clientsocket)
+
 				#if curruser:
 				#	break
 				#else:
