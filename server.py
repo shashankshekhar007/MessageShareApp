@@ -238,7 +238,7 @@ def broadCast(clientsocket,curruser):
 						socketadd[member].mysend(sockettoname[clientsocket] + " has left the chat")
 				clientsocket.mysend("Quit")
 				active_client_list[sockettoname[clientsocket]]='0'
-				getUsage(clientsocket,curuser)
+				getUsage(clientsocket,curruser)
 				return
 		except Exception as e:
 			raise e
