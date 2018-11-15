@@ -19,7 +19,7 @@ def accept_incoming_connections():
 		Thread(target=get_option, args=(clientsocket,)).start()
 
 
-active_client_list= []
+active_client_list= {}
 socketadd ={}
 sockettoname={}
 
@@ -104,7 +104,7 @@ def sign_in(clientsocket):
 	l = creds.strip('\n').split(':')
 	login_message = auth.login(l[0],l[1])
 	if 'Successful' in login_message:
-		active_client_list.append(l[0])
+		active_client_list[l[0]]='0'
 		socketadd[l[0]] = clientsocket
 		sockettoname[clientsocket]= l[0]
 		clientsocket.mysend(login_message)
@@ -120,6 +120,21 @@ def sitIdle(clientsocket):
 		idlevariable = 1
 
 
+def broadCast(clientsocket):
+	while True:
+		try: 
+			msg= clientsocket.myreceive()
+			if (msg=="Quit"):
+				for member in active_client_list:
+					if active_client_list[member] in ['3','4']:
+						socketadd[member].mysend(sockettoname[clientsocket] + " has left the chat")
+				return 
+		except Exception as e:
+			raise e
+		else:
+			for member in active_client_list:
+				if active_client_list[member] in ['3','4']:
+					socketadd[member].mysend(sockettoname[clientsocket] +": "+  msg);
 
 def getUsage(clientsocket):	
 	try:
@@ -127,12 +142,17 @@ def getUsage(clientsocket):
 	except Exception as e:
 		raise e
 	if choice=='1':
+		active_client_list[sockettoname[clientsocket]]='1'
 		startChat(clientsocket)
 	if choice=='2':
+		active_client_list[sockettoname[clientsocket]]='2'
 		fileShare(clientsocket)
 	if choice=='3':
+		active_client_list[sockettoname[clientsocket]]='3'
 		broadCast(clientsocket)
+		getUsage(clientsocket)
 	if choice=='4':
+		active_client_list[sockettoname[clientsocket]]='4'
 		sitIdle(clientsocket)
 	return
 

@@ -42,6 +42,7 @@ def sitIdle():
 		except Exception as e:
 			continue
 		else:
+			print(msg)
 			continue
 
 
@@ -68,6 +69,16 @@ def privateChat():
 			msg1 = input("")
 			sock.mysend(msg1)	
 	
+
+def broadCast():
+	receive_thread = Thread(target = receive)
+	receive_thread.start()
+	while True:
+		msg1 = input(">>")
+		if msg1=="Quit":
+			sock.mysend(msg1)
+			return 
+		sock.mysend(msg1)
 
 
 while True:
@@ -129,6 +140,7 @@ while True:
 		fileTransfer()
 	if option=='3':
 		broadCast()
+		renew()
 	if option=='4':
 		sitIdle()
 sock.close()
