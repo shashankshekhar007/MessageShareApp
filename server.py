@@ -40,6 +40,7 @@ def startChat(clientsocket):
 		clientsocket.mysend("Yes")
 		tousersocket.mysend("Someone wants to connect to you")
 		yesorno = tousersocket.myreceive()
+		print("Reaching here "+ sockettoname[clientsocket])
 		if yesorno=='YES':
 			ChatThread = Thread(target = newChat, args=(clientsocket,tousersocket))
 			ChatThread.start()
