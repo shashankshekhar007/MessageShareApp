@@ -27,7 +27,7 @@ def sitIdle():
 		try:
 			msg = sock.myreceive()
 			if msg=="Someone wants to connect to you":
-				sock.mysend("Yes very good")
+				sock.mysend("YES")
 				startChat()
 		except Exception as e:
 			continue
@@ -55,7 +55,7 @@ def privateChat():
 		receive_thread = Thread(target= receive)
 		receive_thread.start()
 		while True:
-			msg1 = input(">>")
+			msg1 = input("")
 			sock.mysend(msg1)	
 	
 

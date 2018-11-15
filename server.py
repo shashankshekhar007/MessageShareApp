@@ -22,6 +22,14 @@ def accept_incoming_connections():
 active_client_list= []
 socketadd ={}
 
+def newChat(clientsocket, tousersocket):
+	while True:
+		try:
+			msg1 = clientsocket.myreceive()
+		except Exception as e:
+			raise e
+		else:
+			msg2 = tousersocket.mysend(">> "+msg1)
 
 def startChat(clientsocket):
 	clientsocket.mysend(str(active_client_list))
@@ -32,20 +40,22 @@ def startChat(clientsocket):
 		tousersocket.mysend("Someone wants to connect to you")
 		yesorno = tousersocket.myreceive()
 		if yesorno=='YES':
+			ChatThread = Thread(target = newChat, args=(clientsocket,tousersocket))
+			ChatThread.start()
 			while True:
 				try:
 					msg1 = tousersocket.myreceive()
 				except Exception as e:
-					print("Nothing")
+					raise e
 				else :
-					clientsocket.mysend(msg1)
-				try:
+					clientsocket.mysend(touser+">> "+msg1)
+				'''try:
 					msg2 = clientsocket.myreceive()
 				except Exception as e:
 					print("Nothing")
 				else :
 					tousersocket.mysend(msg2)
-
+				'''
 
 def get_option(clientsocket):
 	try:
@@ -107,7 +117,8 @@ def sign_in(clientsocket):
 
 def sitIdle(clientsocket):
 	while True:
-		print(1)
+		#print(1)
+		idlevariable = 1
 
 
 
