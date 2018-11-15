@@ -29,12 +29,12 @@ def newChat(clientsocket, tousersocket):
 			msg1 = clientsocket.myreceive()
 			if msg1=="Quit":
 				tousersocket.mysend("Quit")
-				tousersocket.mysend("Renew")
 				break
 		except Exception as e:
 			raise e
 		else:
 			msg2 = tousersocket.mysend(sockettoname[tousersocket]+ ">> "+msg1)
+	getUsage(clientsocket)
 
 def startp2pChat(p1socket, p2socket):
 	Thread1 = Thread(target=newChat, args=(p1socket, p2socket))

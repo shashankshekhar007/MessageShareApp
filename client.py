@@ -23,13 +23,9 @@ def receive():
 			print("New chat started")
 		if msg=="Quit":
 			print("Quit received")
-			sock.mysend("Quit")
-			#renew()
-		if msg=="Renew":
-			renew()
+			break
 		else:
 			print(msg)
-        
 
 
 def sitIdle():
@@ -39,10 +35,12 @@ def sitIdle():
 			if msg=="Someone wants to connect to you":
 				sock.mysend("YES")
 				startChat()
+				break
 		except Exception as e:
 			continue
 		else:
 			continue
+	return
 
 
 def startChat():
@@ -50,7 +48,11 @@ def startChat():
 	receive_thread.start()
 	while True:
 		msg1 = input("")
+		if msg1=="Quit":
+			sock.mysend(msg1)
+			return
 		sock.mysend(msg1)
+	return
 	
 
 
@@ -66,9 +68,14 @@ def privateChat():
 		receive_thread.start()
 		while True:
 			msg1 = input("")
-			sock.mysend(msg1)	
-	
-
+			if msg1=="Quit":
+				print("Got input quit before sending")
+				sock.mysend(msg1)
+				print("Got the input quit")
+				break
+			sock.mysend(msg1)
+		print("About to return")
+		return
 
 while True:
 	option = 0
@@ -107,16 +114,18 @@ def renew():
 		sock.mysend(option)
 		if option=='1':
 			privateChat()
+			print("Returned safe and sound")
 		if option=='2':
 			fileTransfer()
 		if option=='3':
 			broadCast()
 		if option=='4':
 			sitIdle()
+		print("Loop to start")
 	sock.close()
 
-while True:
-	print("[1]PrivatChat\n[2]FileSharing\n[3]Broadcast\n[4]Idle")
+renew()
+'''print("[1]PrivatChat\n[2]FileSharing\n[3]Broadcast\n[4]Idle")
 	option = input("Option:")
 	while option not in ['1','2','3','4']:
 		option = input(option_msg)
@@ -130,5 +139,5 @@ while True:
 	if option=='3':
 		broadCast()
 	if option=='4':
-		sitIdle()
-sock.close()
+		sitIdle()'''
+#sock.close()
