@@ -63,10 +63,7 @@ def get_next_action(clientsocket,curruser):
 				filename = clientsocket.myreceive()
 			except Exception as e:
 				raise e
-			print("Going to see the file now")
 			filedata = curruser.readfile(filename)
-			print("Seen the file")
-			print(filedata)
 			if "File doesn't exist!!\n" == filedata:
 				filedata = curruser.shared_read(filename)
 				if "File is not shared with you!!\n" == filedata:
@@ -161,7 +158,6 @@ def startChat(clientsocket,curruser):
 		clientsocket.mysend("Yes")
 		tousersocket.mysend("Someone wants to connect to you")
 		yesorno = tousersocket.myreceive()
-		print("Reaching here "+ sockettoname[clientsocket])
 		if yesorno=='YES':
 			startp2pChat(clientsocket, tousersocket,curruser)
 			

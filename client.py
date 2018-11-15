@@ -13,12 +13,11 @@ import os
 
 sock = mysocket()
 port = 12345 
-ip_address = input("Type the id address to connect to\n")
+ip_address = input("Type the ip address to connect to\n")
 sock.connect(ip_address, port)
 
 
 def receive():
-	print("This")
 	while True:
 		msg= sock.myreceive()
 		if (msg=="Someone wants to connect to you"):
@@ -74,12 +73,9 @@ def privateChat():
 		while True:
 			msg1 = input("")
 			if msg1=="Quit":
-				print("Got input quit before sending")
 				sock.mysend(msg1)
-				print("Got the input quit")
 				break
 			sock.mysend(msg1)
-		print("About to return")
 		return
 	
 
@@ -107,9 +103,7 @@ def fileTransfer():
 			if choice not in ['1','2','3','4','5','6','7','8']:
 				print(options)
 				print("Error, Enter valid option")
-		print("Iam sending")
 		sock.mysend(choice)
-		print("I am going to receive")
 		if choice=='1':
 			msg1= sock.myreceive()
 			print(msg1)
@@ -117,9 +111,7 @@ def fileTransfer():
 		if choice == '2':
 			filename = input("Enter filename:- ")
 			if os.path.isfile(filename):
-				print("opening file")
 				f = open(filename, "r")
-				print(" to Read file")
 				filedata = f.read()
 				f.close()
 				sock.mysend(os.path.basename(filename))
@@ -133,17 +125,14 @@ def fileTransfer():
 			filename = input("Enter file name: ")
 			filename = os.path.basename(filename)
 			sock.mysend(filename)
-			print("Sending filename")
 			filedata = sock.myreceive()
-			print(filedata)
+			#print(filedata)
 			if "File doesn't exist!!\n" == filedata:
 				print (filedata)
 			else:
-				print("Going to open file")
 				with open(filename, 'w') as outfile:
 					outfile.write(filedata)
 				print("File Transferred!!")
-				print(filedata)
 
 		elif choice == '4':
 			filename = input("Enter file name: ")
@@ -166,7 +155,6 @@ def fileTransfer():
 		elif choice =='7':
 			print(sock.myreceive())
 		elif choice == '8':
-			print("I am here")
 			return
 		
 
@@ -207,18 +195,14 @@ def renew():
 		sock.mysend(option)
 		if option=='1':
 			privateChat()
-			print("Returned safe and sound")
 		if option=='2':
 			fileTransfer()
-			print("Coming in renew")
 		if option=='3':
 			broadCast()
-			print("Returned from broadcast")
 		if option=='4':
 			sitIdle()
 		if option=='5':
 			break
-		print("Loop to start")
 	sock.close()
 
 renew()
