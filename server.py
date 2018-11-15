@@ -19,7 +19,7 @@ def accept_incoming_connections():
 		Thread(target=get_option, args=(clientsocket,)).start()
 
 
-active_client_list= []
+active_client_list= {}
 socketadd ={}
 sockettoname={}
 
@@ -27,10 +27,21 @@ def newChat(clientsocket, tousersocket):
 	while True:
 		try:
 			msg1 = clientsocket.myreceive()
+			if msg1=="Quit":
+				tousersocket.mysend("Quit")
+				tousersocket.mysend("Renew")
+				break
 		except Exception as e:
 			raise e
 		else:
 			msg2 = tousersocket.mysend(sockettoname[tousersocket]+ ">> "+msg1)
+
+def startp2pChat(p1socket, p2socket):
+	Thread1 = Thread(target=newChat, args=(p1socket, p2socket))
+	Thread2 = Thread(target=newChat, args=(p2socket, p1socket))
+	Thread1.start()
+	Thread2.start()
+
 
 def startChat(clientsocket):
 	clientsocket.mysend(str(active_client_list))
@@ -42,23 +53,8 @@ def startChat(clientsocket):
 		yesorno = tousersocket.myreceive()
 		print("Reaching here "+ sockettoname[clientsocket])
 		if yesorno=='YES':
-			ChatThread = Thread(target = newChat, args=(clientsocket,tousersocket))
-			ChatThread.start()
-			while True:
-				try:
-					msg1 = tousersocket.myreceive()
-				except Exception as e:
-					raise e
-				else :
-					clientsocket.mysend(touser+">> "+msg1)
-				'''try:
-					msg2 = clientsocket.myreceive()
-				except Exception as e:
-					print("Nothing")
-				else :
-					tousersocket.mysend(msg2)
-				'''
-
+			startp2pChat(clientsocket, tousersocket)
+			
 def get_option(clientsocket):
 	try:
 		clientsocket.mysend('[1] Signup \n[2] SignIn\n[3] Quit\n')
@@ -108,7 +104,7 @@ def sign_in(clientsocket):
 	l = creds.strip('\n').split(':')
 	login_message = auth.login(l[0],l[1])
 	if 'Successful' in login_message:
-		active_client_list.append(l[0])
+		active_client_list[l[0]]='0'
 		socketadd[l[0]] = clientsocket
 		sockettoname[clientsocket]= l[0]
 		clientsocket.mysend(login_message)
@@ -124,6 +120,21 @@ def sitIdle(clientsocket):
 		idlevariable = 1
 
 
+def broadCast(clientsocket):
+	while True:
+		try: 
+			msg= clientsocket.myreceive()
+			if (msg=="Quit"):
+				for member in active_client_list:
+					if active_client_list[member] in ['3','4']:
+						socketadd[member].mysend(sockettoname[clientsocket] + " has left the chat")
+				return 
+		except Exception as e:
+			raise e
+		else:
+			for member in active_client_list:
+				if active_client_list[member] in ['3','4']:
+					socketadd[member].mysend(sockettoname[clientsocket] +": "+  msg);
 
 def getUsage(clientsocket):	
 	try:
@@ -131,12 +142,17 @@ def getUsage(clientsocket):
 	except Exception as e:
 		raise e
 	if choice=='1':
+		active_client_list[sockettoname[clientsocket]]='1'
 		startChat(clientsocket)
 	if choice=='2':
+		active_client_list[sockettoname[clientsocket]]='2'
 		fileShare(clientsocket)
 	if choice=='3':
+		active_client_list[sockettoname[clientsocket]]='3'
 		broadCast(clientsocket)
+		getUsage(clientsocket)
 	if choice=='4':
+		active_client_list[sockettoname[clientsocket]]='4'
 		sitIdle(clientsocket)
 	return
 
