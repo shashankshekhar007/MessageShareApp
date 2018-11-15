@@ -22,7 +22,7 @@ def receive():
 			sock.mysend("YES")
 			print("New chat started")
 		else:
-			print(msg)
+			print(msg.rjust(258-len(msg)," "))
         
 
 
