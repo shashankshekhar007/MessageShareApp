@@ -142,7 +142,7 @@ def newChat(clientsocket, tousersocket):
 		except Exception as e:
 			raise e
 		else:
-			msg2 = tousersocket.mysend(sockettoname[tousersocket]+ ">> "+msg1)
+			msg2 = tousersocket.mysend(sockettoname[clientsocket]+ ">> "+msg1)
 	getUsage(clientsocket)
 
 def startp2pChat(p1socket, p2socket):
@@ -270,6 +270,9 @@ def getUsage(clientsocket,curruser):
 	if choice=='4':
 		active_client_list[sockettoname[clientsocket]]='4'
 		sitIdle(clientsocket)
+	if choice=='5':
+		del active_client_list[sockettoname[clientsocket]]
+		clientsocket.close()
 	return
 
 
