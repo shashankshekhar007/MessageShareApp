@@ -9,6 +9,7 @@ import auth
 import term
 import time
 from clientsocketdefinition import mysocket
+import os
 
 sock = mysocket()
 port = 12345
@@ -93,6 +94,82 @@ def broadCast():
 			return 
 		sock.mysend(msg1)
 
+
+
+def fileTransfer():
+	while True:
+		options = 'Enter \n[1] List Files\n[2] Upload File\n[3] Download File \n[4] Delete File\n[5] Give Access\n[6] Revoke Access\n[7] Shared Files\n[8] Exit\n'
+		print(options)
+		choice = input("Your Choice")
+		while choice not in ['1','2','3','4','5','6','7','8']:
+			print("Error, Enter valid option")
+			choice = input("Your Choice")
+			if choice not in ['1','2','3','4','5','6','7','8']:
+				print(options)
+				print("Error, Enter valid option")
+		print("Iam sending")
+		sock.mysend(choice)
+		print("I am going to receive")
+		if choice=='1':
+			msg1= sock.myreceive()
+			print(msg1)
+
+		if choice == '2':
+			filename = input("Enter filename:- ")
+			if os.path.isfile(filename):
+				print("opening file")
+				f = open(filename, "r")
+				print(" to Read file")
+				filedata = f.read()
+				f.close()
+				sock.mysend(os.path.basename(filename))
+				print(sock.myreceive())
+				sock.mysend(filedata)
+			else:
+				sock.mysend("#####----#####")
+				print("File doesn't exist!!\n")
+
+		elif choice == '3':
+			filename = input("Enter file name: ")
+			filename = os.path.basename(filename)
+			sock.mysend(filename)
+			print("Sending filename")
+			filedata = sock.myreceive()
+			print(filedata)
+			if "File doesn't exist!!\n" == filedata:
+				print (filedata)
+			else:
+				print("Going to open file")
+				with open(filename, 'w') as outfile:
+					outfile.write(filedata)
+				print("File Transferred!!")
+				print(filedata)
+
+		elif choice == '4':
+			filename = input("Enter file name: ")
+			filename = os.path.basename(filename)
+			sock.mysend(filename)
+			print(sock.myreceive())
+
+		elif choice in ['5','6']:
+			filename= input("Enter file name: ")
+			username= input("Enter username: ")
+			l = filename + ":" + username
+			try:				
+				sock.mysend(l)
+			except Exception as e:
+				raise e
+			try:
+				print(sock.myreceive())
+			except Exception as e:
+				raise e
+		elif choice =='7':
+			print(sock.myreceive())
+		elif choice == '8':
+			print("I am here")
+			return
+		
+
 while True:
 	option = 0
 	option_msg = sock.myreceive()
@@ -133,6 +210,7 @@ def renew():
 			print("Returned safe and sound")
 		if option=='2':
 			fileTransfer()
+			print("Coming in renew")
 		if option=='3':
 			broadCast()
 			print("Returned from broadcast")
