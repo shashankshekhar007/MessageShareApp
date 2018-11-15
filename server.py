@@ -27,10 +27,21 @@ def newChat(clientsocket, tousersocket):
 	while True:
 		try:
 			msg1 = clientsocket.myreceive()
+			if msg1=="Quit":
+				tousersocket.mysend("Quit")
+				tousersocket.mysend("Renew")
+				break
 		except Exception as e:
 			raise e
 		else:
 			msg2 = tousersocket.mysend(sockettoname[tousersocket]+ ">> "+msg1)
+
+def startp2pChat(p1socket, p2socket):
+	Thread1 = Thread(target=newChat, args=(p1socket, p2socket))
+	Thread2 = Thread(target=newChat, args=(p2socket, p1socket))
+	Thread1.start()
+	Thread2.start()
+
 
 def startChat(clientsocket):
 	clientsocket.mysend(str(active_client_list))
@@ -41,23 +52,8 @@ def startChat(clientsocket):
 		tousersocket.mysend("Someone wants to connect to you")
 		yesorno = tousersocket.myreceive()
 		if yesorno=='YES':
-			ChatThread = Thread(target = newChat, args=(clientsocket,tousersocket))
-			ChatThread.start()
-			while True:
-				try:
-					msg1 = tousersocket.myreceive()
-				except Exception as e:
-					raise e
-				else :
-					clientsocket.mysend(touser+">> "+msg1)
-				'''try:
-					msg2 = clientsocket.myreceive()
-				except Exception as e:
-					print("Nothing")
-				else :
-					tousersocket.mysend(msg2)
-				'''
-
+			startp2pChat(clientsocket, tousersocket)
+			
 def get_option(clientsocket):
 	try:
 		clientsocket.mysend('[1] Signup \n[2] SignIn\n[3] Quit\n')
