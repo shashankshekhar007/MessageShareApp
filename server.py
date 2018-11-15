@@ -7,7 +7,6 @@ import auth
 from serversocketdefinition import mysocket
 import time
 import user
-#from active_client import active_client_list
 from socket import AF_INET, socket, SOCK_STREAM
 from threading import Thread
 
@@ -132,7 +131,7 @@ def get_next_action(clientsocket,curruser):
 
 
 
-def newChat(clientsocket, tousersocket):
+def newChat(clientsocket, tousersocket,curruser):
 	while True:
 		try:
 			msg1 = clientsocket.myreceive()
@@ -143,17 +142,17 @@ def newChat(clientsocket, tousersocket):
 			raise e
 		else:
 			msg2 = tousersocket.mysend(sockettoname[tousersocket]+ ">> "+msg1)
-	getUsage(clientsocket)
+	getUsage(clientsocket,curruser)
 
-def startp2pChat(p1socket, p2socket):
+def startp2pChat(p1socket, p2socket,curruser):
 	print("Starting chat between "+sockettoname[p1socket]+" and "+ sockettoname[p2socket])
-	Thread1 = Thread(target=newChat, args=(p1socket, p2socket))
-	Thread2 = Thread(target=newChat, args=(p2socket, p1socket))
+	Thread1 = Thread(target=newChat, args=(p1socket, p2socket,curruser))
+	Thread2 = Thread(target=newChat, args=(p2socket, p1socket,curruser))
 	Thread1.start()
 	Thread2.start()
 
 
-def startChat(clientsocket):
+def startChat(clientsocket,curruser):
 	clientsocket.mysend(str(active_client_list))
 	touser = clientsocket.myreceive()
 	if touser in active_client_list:
@@ -163,7 +162,7 @@ def startChat(clientsocket):
 		yesorno = tousersocket.myreceive()
 		print("Reaching here "+ sockettoname[clientsocket])
 		if yesorno=='YES':
-			startp2pChat(clientsocket, tousersocket)
+			startp2pChat(clientsocket, tousersocket,curruser)
 			
 def get_option(clientsocket):
 	try:
@@ -232,7 +231,7 @@ def sitIdle(clientsocket):
 		idlevariable = 1
 
 
-def broadCast(clientsocket):
+def broadCast(clientsocket,curruser):
 	while True:
 		try: 
 			msg= clientsocket.myreceive()
@@ -242,7 +241,7 @@ def broadCast(clientsocket):
 						socketadd[member].mysend(sockettoname[clientsocket] + " has left the chat")
 				clientsocket.mysend("Quit")
 				active_client_list[sockettoname[clientsocket]]='0'
-				getUsage(clientsocket)
+				getUsage(clientsocket,curuser)
 				return
 		except Exception as e:
 			raise e
@@ -251,29 +250,26 @@ def broadCast(clientsocket):
 				if active_client_list[member] in ['3','4']:
 					socketadd[member].mysend(sockettoname[clientsocket] +": "+  msg);
 
-def getUsage(clientsocket,curruser):	
+def getUsage(clientsocket,curruser=None):	
 	try:
 		choice = clientsocket.myreceive()
 	except Exception as e:
 		raise e
 	if choice=='1':
 		active_client_list[sockettoname[clientsocket]]='1'
-		startChat(clientsocket)
+		startChat(clientsocket,curruser)
 	if choice=='2':
 		active_client_list[sockettoname[clientsocket]]='2'
 		get_next_action(clientsocket,curruser)
 		getUsage(clientsocket,curruser)
 	if choice=='3':
 		active_client_list[sockettoname[clientsocket]]='3'
-		broadCast(clientsocket)
+		broadCast(clientsocket,curruser)
 		#getUsage(clientsocket)
 	if choice=='4':
 		active_client_list[sockettoname[clientsocket]]='4'
 		sitIdle(clientsocket)
 	return
-
-
-
 
 
 port = 12345
@@ -293,38 +289,7 @@ while True:
 	ACCEPT_THREAD = Thread(target = accept_incoming_connections)
 	ACCEPT_THREAD.start()
 	ACCEPT_THREAD.join()
-	# clientsocket, addr = SERVER.accept()
-	# print("Got connection from", addr)
-	# newpid = os.fork()
-	# if newpid<0:
-	# 	print("Error in forking")
-	# 	sys.exit()
-	# elif newpid==0:
-	# 	flag = 1
-	# 	while True:
-	# 		option = get_option(clientsocket)
-
-	# 		if option=='1':
-	# 			sign_up(clientsocket)
-	# 		if option=='2':
-	# 			answer = sign_in(clientsocket)
-	# 			if answer:
-	# 				print(answer)
-	# 				break
-	# 				#curruser = answer[0]
-	# 				#active_client_list.append(answer[1])
-	# 				#print(active_client_list)
-	# 				#if curruser:
-	# 				#	break
-	# 			else:
-	# 				continue
-
-	# 	#del(curruser)
-
-	# 	clientsocket.close()
-	# 	break
-	# else:
-	# 	clientsocket.close()
+	
 SERVER.close()
 
 

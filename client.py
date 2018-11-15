@@ -220,20 +220,3 @@ def renew():
 	sock.close()
 
 renew()
-'''print("[1]PrivatChat\n[2]FileSharing\n[3]Broadcast\n[4]Idle")
-	option = input("Option:")
-	while option not in ['1','2','3','4']:
-		option = input(option_msg)
-		if option not in ['1','2','3','4']:
-			print("Enter either 1 or 2 or 3 or 4")
-	sock.mysend(option)	
-	if option=='1':		
-		privateChat()
-	if option=='2':
-		fileTransfer()
-	if option=='3':
-		broadCast()
-		renew()
-	if option=='4':
-		sitIdle()'''
-#sock.close()
