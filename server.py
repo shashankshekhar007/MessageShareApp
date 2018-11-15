@@ -37,6 +37,7 @@ def newChat(clientsocket, tousersocket):
 	getUsage(clientsocket)
 
 def startp2pChat(p1socket, p2socket):
+	print("Starting chat between "+sockettoname[p1socket]+" and "+ sockettoname[p2socket])
 	Thread1 = Thread(target=newChat, args=(p1socket, p2socket))
 	Thread2 = Thread(target=newChat, args=(p2socket, p1socket))
 	Thread1.start()
@@ -128,7 +129,10 @@ def broadCast(clientsocket):
 				for member in active_client_list:
 					if active_client_list[member] in ['3','4']:
 						socketadd[member].mysend(sockettoname[clientsocket] + " has left the chat")
-				return 
+				clientsocket.mysend("Quit")
+				active_client_list[sockettoname[clientsocket]]='0'
+				getUsage(clientsocket)
+				return
 		except Exception as e:
 			raise e
 		else:
@@ -150,7 +154,7 @@ def getUsage(clientsocket):
 	if choice=='3':
 		active_client_list[sockettoname[clientsocket]]='3'
 		broadCast(clientsocket)
-		getUsage(clientsocket)
+		#getUsage(clientsocket)
 	if choice=='4':
 		active_client_list[sockettoname[clientsocket]]='4'
 		sitIdle(clientsocket)

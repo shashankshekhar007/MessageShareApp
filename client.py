@@ -7,6 +7,7 @@ import socket
 import sys
 import auth
 import term
+import time
 from clientsocketdefinition import mysocket
 
 sock = mysocket()
@@ -88,6 +89,7 @@ def broadCast():
 		msg1 = input(">>")
 		if msg1=="Quit":
 			sock.mysend(msg1)
+			time.sleep(2)
 			return 
 		sock.mysend(msg1)
 
@@ -133,6 +135,7 @@ def renew():
 			fileTransfer()
 		if option=='3':
 			broadCast()
+			print("Returned from broadcast")
 		if option=='4':
 			sitIdle()
 		print("Loop to start")
