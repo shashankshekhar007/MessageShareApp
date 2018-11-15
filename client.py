@@ -6,6 +6,7 @@ import getpass
 import socket
 import sys
 import auth
+import term
 from clientsocketdefinition import mysocket
 
 sock = mysocket()
@@ -28,7 +29,7 @@ def receive():
 		if msg=="Renew":
 			renew()
 		else:
-			print(msg.rjust(258-len(msg)," "))
+			term.writeLine(term.right(msg))
         
 
 
