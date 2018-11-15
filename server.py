@@ -20,6 +20,32 @@ def accept_incoming_connections():
 
 
 active_client_list= []
+socketadd ={}
+
+
+def startChat(clientsocket):
+	clientsocket.mysend(str(active_client_list))
+	touser = clientsocket.myreceive()
+	if touser in active_client_list:
+		tousersocket = socketadd[touser]
+		clientsocket.mysend("Yes")
+		tousersocket.mysend("Someone wants to connect to you")
+		yesorno = tousersocket.myreceive()
+		if yesorno=='YES':
+			while True:
+				try:
+					msg1 = tousersocket.myreceive()
+				except Exception as e:
+					print("Nothing")
+				else :
+					clientsocket.mysend(msg1)
+				try:
+					msg2 = clientsocket.myreceive()
+				except Exception as e:
+					print("Nothing")
+				else :
+					tousersocket.mysend(msg2)
+
 
 def get_option(clientsocket):
 	try:
@@ -70,13 +96,19 @@ def sign_in(clientsocket):
 	l = creds.strip('\n').split(':')
 	login_message = auth.login(l[0],l[1])
 	if 'Successful' in login_message:
-		active_client_list.append(curruser.name)
-		#curruser.login()
+		active_client_list.append(l[0])
+		socketadd[l[0]] = clientsocket
 		clientsocket.mysend(login_message)
 		getUsage(clientsocket)	
 	else:
 		clientsocket.mysend(login_message)
 		get_option(clientsocket)
+
+
+def sitIdle(clientsocket):
+	while True:
+		print(1)
+
 
 
 def getUsage(clientsocket):	
@@ -88,8 +120,10 @@ def getUsage(clientsocket):
 		startChat(clientsocket)
 	if choice=='2':
 		fileShare(clientsocket)
-	if option=='3':
+	if choice=='3':
 		broadCast(clientsocket)
+	if choice=='4':
+		sitIdle(clientsocket)
 	return
 
 
