@@ -2,6 +2,10 @@ import os
 import hashlib
 
 def signup(user, passwd, pass_repeat):
+	if len(user)==0:
+		return "Please enter a valid username\n"
+	if len(passwd)==0:
+		return "Its too easy! please enter a difficult password\n"
 	if passwd != pass_repeat:
 		return "Passwords do not match\n"
 	elif ' ' in user or ' ' in passwd:
