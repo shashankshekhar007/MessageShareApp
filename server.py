@@ -21,6 +21,7 @@ def accept_incoming_connections():
 
 active_client_list= []
 socketadd ={}
+sockettoname={}
 
 def newChat(clientsocket, tousersocket):
 	while True:
@@ -29,7 +30,7 @@ def newChat(clientsocket, tousersocket):
 		except Exception as e:
 			raise e
 		else:
-			msg2 = tousersocket.mysend(">> "+msg1)
+			msg2 = tousersocket.mysend(sockettoname[tousersocket]+ ">> "+msg1)
 
 def startChat(clientsocket):
 	clientsocket.mysend(str(active_client_list))
@@ -108,6 +109,7 @@ def sign_in(clientsocket):
 	if 'Successful' in login_message:
 		active_client_list.append(l[0])
 		socketadd[l[0]] = clientsocket
+		sockettoname[clientsocket]= l[0]
 		clientsocket.mysend(login_message)
 		getUsage(clientsocket)	
 	else:

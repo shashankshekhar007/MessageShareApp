@@ -18,7 +18,11 @@ def receive():
 	print("This")
 	while True:
 		msg= sock.myreceive()
-		print(msg)
+		if (msg=="Someone wants to connect to you"):
+			sock.mysend("YES")
+			print("New chat started")
+		else:
+			print(msg)
         
 
 
