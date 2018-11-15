@@ -12,7 +12,7 @@ from clientsocketdefinition import mysocket
 import os
 
 sock = mysocket()
-port = 12345
+port = 12345 
 ip_address = input("Type the id address to connect to\n")
 sock.connect(ip_address, port)
 
@@ -28,7 +28,7 @@ def receive():
 			print("Quit received")
 			break
 		else:
-			term.writeLine(term.right(msg))
+			print(msg)
         
 
 
@@ -198,12 +198,12 @@ while True:
 
 def renew():
 	while True:
-		print("[1]PrivatChat\n[2]FileSharing\n[3]Broadcast\n[4]Idle")
+		print("[1]PrivatChat\n[2]FileSharing\n[3]Broadcast\n[4]Idle\n[5]Logout")
 		option = input("Option:")
-		while option not in ['1','2','3','4']:
+		while option not in ['1','2','3','4','5']:
 			option = input(option_msg)
-			if option not in ['1','2','3','4']:
-				print("Enter either 1 or 2 or 3 or 4")
+			if option not in ['1','2','3','4','5']:
+				print("Enter either 1 or 2 or 3 or 4 or 5")
 		sock.mysend(option)
 		if option=='1':
 			privateChat()
@@ -216,6 +216,8 @@ def renew():
 			print("Returned from broadcast")
 		if option=='4':
 			sitIdle()
+		if option=='5':
+			break
 		print("Loop to start")
 	sock.close()
 

@@ -1,0 +1,214 @@
+#include <bits/stdc++.h>
+
+using namespace std;
+
+string nam[12] = {"jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"};
+string month[12] = {"january", "february", "march", "april", "may", "june", "july", "august", "october", "november", "december"};
+
+pair<int, string> single(string c){
+    c=c.substr(0, c.length()-1);
+    transform(c.begin(), c.end(), c.begin(), ::tolower);
+   // cout<<c<<endl;
+    if(c.length()==11){
+        for(int i=0; i<12; i++){
+          //  cout<<c<<" "<<nam[i]<<endl;
+            if(c.find(nam[i])!=std::string::npos){
+                int m=i+1;
+                //cout<<m<<endl;
+                //int x=3;
+                int year=0;
+                int count=0;
+                int date=0;
+                for(int j=0; j<c.length(); j++){
+                    if(c[j]>='0'&&c[j]<='9'){
+                        count++;
+                    }
+                    else{
+                        count=0;
+                    }
+                    
+                    if(count==4){
+                        year=stoi(c.substr(j-3,4));
+                        //cout<<c<<" "<<year<<" "<<endl;
+                        c[j]='#';
+                        c[j-1]='#';
+                        c[j-2]='#';
+                        c[j-3]='#';
+                        break;
+                    }
+                    
+                }
+                if(year==0){return {0,""};}
+               // cout<<"Rechi";
+                count=0;
+                for(int j=0; j<c.length(); j++){
+                    if(c[j]>='0'&&c[j]<='9'){
+                        count++;
+                    }
+                    else{
+                        count=0;
+                    }
+                    
+                    if(count==2){
+                       date=stoi(c.substr(j-1,2));
+                        c[j]='#';
+                        c[j-1]='#';
+                        break;
+                        
+                    }
+                }
+                if(date==0){return {0,""};}
+               // cout<<"Ues"<<date<<year<<m;
+                string h="";
+                string x=to_string(date);
+                if(x.length()==1){x="0"+x;}
+                string y=to_string(m);
+                if(y.length()==1){y="0"+y;}
+                h=h + to_string(year)+y+x;
+                //cout<<" "<<h<<endl;
+                return {1, h};
+                return {0,""};
+            }
+            //return {0,""};
+        }
+        return {0, ""};
+    }
+    else if(c.length()>11){
+        for(int i=0; i<12; i++){
+            if(c.find(month[i])!=string::npos){
+                if(month[i].length()+8!=c.length()){return {0,""};}
+                int m=i+1;
+                int x=month[i].length();
+                
+                
+                return {0,""};
+            }
+        }
+    }
+    else if(c.length()==10){
+        int year=0;
+        int count=0;
+        int date=0;
+        int day=0;
+       // cout<<c<<endl;
+        for(int j=0; j<c.length(); j++){
+            if(c[j]>='0'&&c[j]<='9'){
+                count++;
+            }
+            else{
+                count=0;
+            }
+
+            if(count==4){
+                year=stoi(c.substr(j-3,4));
+                //cout<<c<<" "<<year<<" "<<endl;
+                c[j]='#';
+                c[j-1]='#';
+                c[j-2]='#';
+                c[j-3]='#';
+                break;
+            }
+        }
+        if(year==0){return {0,""};}
+       // cout<<year<<" ";
+        count=0;
+        for(int j=0; j<c.length(); j++){
+            if(c[j]>='0'&&c[j]<='9'){
+                count++;
+            }
+            else{
+                count=0;
+            }
+           // cout<<count<<":"<<endl;
+            if(count==2){
+                
+               date=stoi(c.substr(j-1,2));
+                
+                c[j]='#';
+                c[j-1]='#';
+                break;
+
+            }
+        }
+        if(date==0){return {0,""};}
+        count=0;
+        //cout<<date<<" ";
+        for(int j=0; j<c.length(); j++){
+                    if(c[j]>='0'&&c[j]<='9'){
+                        count++;
+                    }
+                    else{
+                        count=0;
+                    }
+                    
+                    if(count==2){
+                       day=stoi(c.substr(j-1,2));
+                        c[j]='#';
+                        c[j-1]='#';
+                        break;
+                        
+                    }
+                }
+                if(day==0){return {0,""};}
+       // cout<<day<<" ";
+        string h="";
+                string x=to_string(date);
+                if(x.length()==1){x="0"+x;}
+                string y=to_string(day);
+                if(y.length()==1){y="0"+y;}
+                h=h + to_string(year)+y+x;
+      //  cout<<h<<" ";
+                //cout<<" "<<h<<endl;
+                return {1, h};
+          
+    }
+    
+    return {0,""};
+}
+
+pair<int, string> triple(string x, string y, string z){
+    int m=x.length();
+    int n=y.length();
+    int p=z.length();
+    if(!((x[m-1]>='a'&&x[m-1]<='z')||(x[m-1]>='0')&&x[m-1]<='9')){
+        
+    }
+    
+    
+}
+
+using namespace std;
+int main() {
+    string word;
+    vector < string> paragraph;
+    while(!cin.eof()) {
+        cin>>word;
+        paragraph.push_back(word);
+    }
+    for (int i =0; i <paragraph.size(); i++)
+    { 
+
+        if(single(paragraph[i]).first) 
+           {
+            cout<<single(paragraph[i]).second<<endl;
+        }
+        else if(i>=2&&triple(paragraph[i], paragraph[i-1], paragraph[i-2]).first){
+            cout<triple(paragraph[i], paragraph[i-1], paragraph[i-2]).second<<endl;
+        }
+
+        
+    }
+        //cout<<paragraph[i]<<" ";
+    
+//     cin
+//     while(gets(c)!=NULL){
+//         if(single(c).first){ 
+//             cout<<single(c).second<<endl;
+//         }
+        
+//         a=b;
+//         b=c;
+//     }
+    
+    return 0;
+}
